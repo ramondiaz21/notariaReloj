@@ -1,8 +1,8 @@
 // Función para inicializar Flatpickr en el campo de selección de hora
-flatpickr("#hora-reserva", {
+flatpickr("#fecha-hora-reserva", {
   enableTime: true,
-  noCalendar: true,
-  dateFormat: "H:i",
+  dateFormat: "Y-m-d H:i",
+  minDate: "today", // Opcional: Evita que se seleccione una fecha anterior a hoy
 });
 
 var db;
@@ -34,29 +34,29 @@ document
   .addEventListener("submit", function (event) {
     event.preventDefault();
 
+    var fechaHora = document.getElementById("fecha-hora-reserva").value;
     var mesa = document.getElementById("mesa-reserva").value;
-    var hora = document.getElementById("hora-reserva").value;
     var usuario = document.getElementById("usuario-reserva").value;
 
     // Agregar o actualizar la reservación utilizando la función actualizada
-    agregarOActualizarReservacion(db, mesa, hora, usuario);
+    agregarOActualizarReservacion(db, mesa, fechaHora, usuario);
   });
 
-function agregarOActualizarReservacion(db, mesa, hora, usuario) {
+function agregarOActualizarReservacion(db, mesa, fechaHora, usuario) {
   var transaction = db.transaction(["reservaciones"], "readwrite");
   var reservaStore = transaction.objectStore("reservaciones");
 
   // Verificar si hay una reserva existente para la misma mesa y hora
-  var request = reservaStore.get(hora + "-" + mesa);
+  var request = reservaStore.get(fechaHora + "-" + mesa);
 
   request.onsuccess = function (event) {
     var existingReservation = event.target.result;
     if (!existingReservation) {
       // No hay una reserva existente, agregar una nueva
       reservaStore.add({
-        id: hora + "-" + mesa,
+        id: fechaHora + "-" + mesa,
         mesa: mesa,
-        hora: hora,
+        fechaHora: fechaHora,
         usuario: usuario,
       });
       console.log("Reservación agregada exitosamente");
@@ -86,13 +86,13 @@ function mostrarTodasReservaciones() {
     var reservaciones = event.target.result;
 
     // Mostrar todas las reservaciones
-    var reservacionesHtml = "<h3>Reservaciones existentes</h3>";
+    var reservacionesHtml = "";
     reservaciones.forEach(function (reserva) {
       reservacionesHtml +=
         "<p>Mesa: " +
         reserva.mesa +
-        ", Hora: " +
-        reserva.hora +
+        ", Fecha y hora: " +
+        reserva.fechaHora +
         ", Usuario: " +
         reserva.usuario +
         "</p>";

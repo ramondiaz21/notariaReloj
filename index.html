@@ -13,23 +13,18 @@
   <h1>Reservaciones de mesas</h1>
 
   <form id="form-reserva">
-    <label for="mesa-reserva">Mesa:</label>
-    <select id="mesa-reserva">
-      <option value="mesa1">Mesa 1</option>
-      <option value="mesa2">Mesa 2</option>
-      <option value="mesa3">Mesa 3</option>
-      <option value="mesa4">Mesa 4</option>
-      <option value="mesa5">Mesa 5</option>
-    </select><br>
-
-    <label for="hora-reserva">Hora:</label>
-    <input type="text" id="hora-reserva"><br>
-
-    <label for="usuario-reserva">Usuario:</label>
-    <input type="text" id="usuario-reserva"><br>
-
-    <button type="submit" id="boton-reservar">Reservar</button>
-  </form>
+        <label for="fecha-hora-reserva">Fecha y Hora de Reserva:</label>
+        <input type="text" id="fecha-hora-reserva" required><br>
+        <label for="mesa-reserva">Mesa:</label>
+        <select id="mesa-reserva" required>
+            <option value="Mesa 1">Mesa 1</option>
+            <option value="Mesa 2">Mesa 2</option>
+            <option value="Mesa 3">Mesa 3</option>
+        </select><br>
+        <label for="usuario-reserva">Usuario:</label>
+        <input type="text" id="usuario-reserva" required><br>
+        <button type="submit">Reservar</button>
+    </form>
 
   <input type="file" id="input-archivo" accept=".json"><br>
   <button id="boton-cargar-respaldo">Cargar Respaldo</button>
