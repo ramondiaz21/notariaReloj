@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservaciones de mesas</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+
+<body>
+
+  <h1>Reservaciones de mesas</h1>
+
+  <form id="form-reserva">
+    <label for="mesa-reserva">Mesa:</label>
+    <select id="mesa-reserva">
+      <option value="mesa1">Mesa 1</option>
+      <option value="mesa2">Mesa 2</option>
+      <option value="mesa3">Mesa 3</option>
+      <option value="mesa4">Mesa 4</option>
+      <option value="mesa5">Mesa 5</option>
+    </select><br>
+
+    <label for="hora-reserva">Hora:</label>
+    <input type="text" id="hora-reserva"><br>
+
+    <label for="usuario-reserva">Usuario:</label>
+    <input type="text" id="usuario-reserva"><br>
+
+    <button type="submit">Reservar</button>
+  </form>
+
+  <h2>Reservaciones por día</h2>
+  <div id="reservaciones-por-dia"></div>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="db.js"></script>
+  <script src="dates.js"></script>
+</body>
+
+</html>
