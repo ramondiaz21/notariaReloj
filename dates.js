@@ -1,13 +1,19 @@
-// Función para inicializar Flatpickr en el campo de selección de hora
-flatpickr("#fecha-hora-reserva", {
-  enableTime: true,
-  dateFormat: "Y-m-d H:i",
-  minDate: "today", // Opcional: Evita que se seleccione una fecha anterior a hoy
-});
+function inicializarFlatpickr() {
+  flatpickr("#fecha-hora-reserva", {
+    enableTime: true,
+    dateFormat: "Y-m-d H:i",
+    minDate: "today", // Opcional: Evita que se seleccione una fecha anterior a hoy
+    disable: reservasDeshabilitadas, // Deshabilitar las fechas y horas reservadas
+    onChange: function (selectedDates, dateStr, instance) {
+      // Al cambiar la fecha/hora seleccionada, actualizar la lista de fechas deshabilitadas
+      actualizarFechasDeshabilitadas();
+    },
+  });
+}
 
 var db;
+var reservasDeshabilitadas = [];
 
-// Llamar a la función para abrir la base de datos y mostrar todas las reservaciones al cargar la página
 window.onload = function () {
   // Obtener la instancia de la base de datos
   var request = indexedDB.open("reservacionesDB", 1);
@@ -21,6 +27,9 @@ window.onload = function () {
     mostrarTodasReservaciones();
 
     console.log("Contenido de la base de datos:", db);
+
+    // Inicializar flatpickr con las fechas y horas reservadas deshabilitadas
+    inicializarFlatpickr();
   };
 
   // Manejar el evento de error
@@ -28,6 +37,42 @@ window.onload = function () {
     console.log("Error al abrir la base de datos: " + event.target.errorCode);
   };
 };
+
+function consultarTodasReservaciones() {
+  var transaction = db.transaction(["reservaciones"], "readonly");
+  var reservaStore = transaction.objectStore("reservaciones");
+
+  var request = reservaStore.getAll();
+
+  return new Promise(function (resolve, reject) {
+    request.onsuccess = function (event) {
+      var reservas = event.target.result;
+      resolve(reservas);
+    };
+
+    request.onerror = function (event) {
+      console.log("Error al consultar las reservaciones");
+      reject([]);
+    };
+  });
+}
+
+
+function actualizarFechasDeshabilitadas() {
+  // Consultar la base de datos para obtener las reservas existentes
+  var reservas = consultarTodasReservaciones();
+
+  // Reinicializar la lista de fechas deshabilitadas
+  reservasDeshabilitadas = [];
+
+  // Agregar las fechas y horas de las reservas a la lista de fechas deshabilitadas
+  reservas.forEach(function (reserva) {
+    reservasDeshabilitadas.push(reserva.fechaHora);
+  });
+
+  // Actualizar flatpickr con las fechas deshabilitadas
+  flatpickr("#fecha-hora-reserva").set("disable", reservasDeshabilitadas);
+}
 
 document
   .getElementById("form-reserva")
@@ -61,10 +106,8 @@ function agregarOActualizarReservacion(db, mesa, fechaHora, usuario) {
       });
       console.log("Reservación agregada exitosamente");
     } else {
-      // Hay una reserva existente, actualizarla
-      existingReservation.usuario = usuario;
-      reservaStore.put(existingReservation);
-      console.log("Reservación actualizada exitosamente");
+      // Hay una reserva existente, mostrar una alerta al usuario
+      alert("Esta fecha y hora ya están reservadas. Por favor, elige otra.");
     }
 
     // Mostrar todas las reservaciones después de agregar o actualizar
@@ -75,6 +118,7 @@ function agregarOActualizarReservacion(db, mesa, fechaHora, usuario) {
     console.log("Error al agregar o actualizar la reservación");
   };
 }
+
 
 function mostrarTodasReservaciones() {
   var transaction = db.transaction(["reservaciones"], "readonly");
@@ -111,4 +155,3 @@ var flatpickrInstance = flatpickr("#hora-reserva", {
   noCalendar: true,
   dateFormat: "H:i",
 });
-
