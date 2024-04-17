@@ -19,6 +19,8 @@ window.onload = function () {
 
     // Mostrar todas las reservaciones por día
     mostrarTodasReservaciones();
+
+    console.log("Contenido de la base de datos:", db);
   };
 
   // Manejar el evento de error
@@ -109,3 +111,4 @@ var flatpickrInstance = flatpickr("#hora-reserva", {
   noCalendar: true,
   dateFormat: "H:i",
 });
+
